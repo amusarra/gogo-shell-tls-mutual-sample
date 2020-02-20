@@ -1,0 +1,6 @@
+Bundle-Description: Get a resource protected by two-way SSL/TLS mutual authentication using the Liferay HTTPClient
+Bundle-Name: Gogo Shell - Command for getting HTTPS protected resources
+Bundle-SymbolicName: it.dontesta.labs.liferay.security.tls.auth.gogoshell
+Bundle-Version: 1.0.0
+Export-Package: it.dontesta.labs.liferay.security.tls.auth.gogoshell.api
+-sources: true
