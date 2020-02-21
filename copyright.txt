@@ -1,7 +1,8 @@
 /**
  * MIT License
  *
- * Gogo Shell - Command for getting HTTPS protected resources
+ * Gogo Shell Command for getting HTTPS protected resources
+ * via SSL/TLS Two-Way Authentication
  *
  * Copyright (C) 2020 Antonio Musarra's Blog
  *
