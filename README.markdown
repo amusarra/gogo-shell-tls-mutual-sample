@@ -40,7 +40,8 @@ The following is the setenv.sh file of the Liferay 7.2 GA2 tomcat bundle
 modified to set the keyStore system properties. Once set up, start the Liferay portal.
 
 Replace the `$LIFERAY_HOME` with your Liferay home directory and create the 
-`security/keystore` directory inside it.
+`security/keystore` directory inside it. 
+You can find the keyStore `tls-client.dontesta.it.jks` in `docs/security/certs` directory.
 
 ```bash
 SSL_OPTS="$SSL_OPTS -Djavax.net.ssl.keyStore=$LIFERAY_HOME/security/keystore/tls-client.dontesta.it.jks"
