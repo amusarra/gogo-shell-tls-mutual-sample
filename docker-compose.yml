@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  apache-ssl-tls-auth:
+    image: amusarra/apache-ssl-tls-mutual-authentication
+    container_name: tls-auth.dontesta.it
+    hostname: tls-auth.dontesta.it
+    environment:
+      APACHE_SSL_PORT: 443
+    ports: 
+      - 443:443
+  liferay-portal-72:
+    image: liferay/portal:7.2.1-ga2
+    container_name: liferay-portal-72.dontesta.it
+    environment: 
+      LIFERAY_JVM_OPTS: "-Djavax.net.debug=ssl -Djavax.net.ssl.keyStorePassword=secret -Djavax.net.ssl.keyStore=/opt/liferay/security/keystore/tls-client.dontesta.it.jks"
+    ports:
+      - 7080:8080
+      - 7000:8000
+      - 7009:8009
+      - 22311:11311
+    hostname: liferay-portal-72.dontesta.it
+    volumes:
+      - ./docker-volume:/mnt/liferay
