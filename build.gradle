@@ -16,7 +16,7 @@ plugins.withId("java") {
 	sourceCompatibility = "1.8"
 }
 
-task copyKeyStoreToDockerVolume(type: Copy, dependsOn: build) {
+task copyKeyStoreToDockerVolume(type: Copy) {
   from "docs/security/certs"
   include "**/*.jks"
   into "docker-volume/files/security/keystore"
@@ -25,6 +25,7 @@ task copyKeyStoreToDockerVolume(type: Copy, dependsOn: build) {
 deploy {
   dependsOn tasks.named("copyKeyStoreToDockerVolume")
 }
+
 
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "4.4.0"
