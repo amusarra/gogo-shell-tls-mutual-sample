@@ -19,7 +19,7 @@ by virtue of the fact that the platform makes available the HttpUtil
 class (existing since Liferay versions 6.x) which fully matches our needs 
 and which implements the interface com.liferay.portal.kernel.util.Http.
 
-## 1. Quick Start
+## 1. Quick Start without Docker Compose 
 The requirements to be able to perform the connection test to the HTTPS service 
 in Mutual Authentication are the following:
 
@@ -122,7 +122,68 @@ pipe-getProtectedResource https://tls-auth.dontesta.it/secure/api/headers, setSo
 }
 ```
 
-## 2. Resources
+## 2. Quick Start with Docker Compose
+This is certainly the easiest way to get the environment ready for testing.
+Inside the project there is the docker-compose file where the following services are defined:
+
+1. **apache-ssl-tls-auth**: Service that exposes in HTTPS (TLSv1.2) a series of 
+services protected by Two-Way Mutual Authentication;
+2. **liferay-portal-72**: Liferay service configured with the keyStore needed 
+to access protected services.
+
+Following the contents of the file `docker-compose.yml` where the two services described above are configured.
+
+```yaml
+version: '3.3'
+services:
+  apache-ssl-tls-auth:
+    image: amusarra/apache-ssl-tls-mutual-authentication
+    container_name: tls-auth.dontesta.it
+    hostname: tls-auth.dontesta.it
+    environment:
+      APACHE_SSL_PORT: 443
+    ports: 
+      - 443:443
+  liferay-portal-72:
+    image: liferay/portal:7.2.1-ga2
+    container_name: liferay-portal-72.dontesta.it
+    environment: 
+      LIFERAY_JVM_OPTS: "-Djavax.net.debug=ssl -Djavax.net.ssl.keyStorePassword=secret -Djavax.net.ssl.keyStore=/opt/liferay/security/keystore/tls-client.dontesta.it.jks"
+    ports:
+      - 7080:8080
+      - 7000:8000
+      - 7009:8009
+      - 22311:11311
+    hostname: liferay-portal-72.dontesta.it
+    volumes:
+      - ./docker-volume:/mnt/liferay
+```
+For the Liferay service via environment `LIFERAY_JVM_OPTS` the keyStore and the network debug level have been configured for the SSL protocol.
+
+Docker Volume configuration is required to copy the keyStore and deploy the `it.dontesta.labs.liferay.security.tls.auth.gogoshell` bundle.
+
+Follow the commands necessary to start the services via Docker Compose.
+
+```bash
+$ git clone https://github.com/amusarra/gogo-shell-tls-mutual-sample.git
+$ cd gogo-shell-tls-mutual-sample
+$ ./gradlew deploy
+$ docker-compose up
+```
+
+Once the services are up, you can proceed with the test directly from the Gogo Shell.
+
+```bash
+$ telnet localhost 22311
+
+g! security:getProtectedResource https://tls-auth.dontesta.it/secure/api/headers
+```
+
+Watch now the video published on [Antonio Musarra's Blog YouTube](https://www.youtube.com/channel/UC5D3_EtVPbZYUhrUcEK_THA) channel.
+
+[![Liferay 7.2 - Gogo Shell Command for the Two-Way SSL/TLS Mutual Authentication](https://img.youtube.com/vi/Etc2_Dm0M98/0.jpg)](https://www.youtube.com/watch?v=Etc2_Dm0M98)
+
+## 3. Resources
 Following are some resources that could be useful as a summary
 
 1. [Importazione Certificati SSL sul Java Keystore (JKS)](http://bit.ly/2to0ed9)
@@ -131,7 +192,7 @@ Following are some resources that could be useful as a summary
 4. [GitHub – amusarra/docker-apache-ssl-tls-mutual-authentication](http://bit.ly/2VjbJ1x)
 5. [Apache HTTP 2.4 – Docker image for SSL/TLS Mutual Authentication](https://www.youtube.com/watch?v=VIRWJjqb0y0)
 
-[![Liferay 7 Wildfly: How to add support for Oracle DB ](https://img.youtube.com/vi/VIRWJjqb0y0/0.jpg)](https://www.youtube.com/watch?v=VIRWJjqb0y0)
+[![Liferay 7 Wildfly: How to add support for Oracle DB](https://img.youtube.com/vi/VIRWJjqb0y0/0.jpg)](https://www.youtube.com/watch?v=VIRWJjqb0y0)
 
 ## Project License
 MIT License
